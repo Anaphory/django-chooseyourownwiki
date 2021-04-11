@@ -8,8 +8,8 @@ from wiki import forms as wiki_forms
 from wiki import models as wiki_models
 from wiki.conf import settings
 from wiki.forms import CreateForm
-from wiki.plugins.whatlinkswhere.views import WhatLinksHere
-from wiki.plugins.whatlinkswhere.views import WhatLinksWhere
+from wiki.plugins.linknetwork.views import LinkNetwork
+from wiki.plugins.linknetwork.views import WhatLinksHere
 from wiki.views.article import Create as CreateView
 
 from . import models
@@ -20,7 +20,7 @@ class WhatLeadsHere(WhatLinksHere):
     model = models.InternalStoryLink
 
 
-class StoryNetwork(WhatLinksWhere):
+class StoryNetwork(LinkNetwork):
     template_name = "wiki/plugins/insertstep/storynetwork.html"
     paginator_class = None
     paginate_by = 1000000000000

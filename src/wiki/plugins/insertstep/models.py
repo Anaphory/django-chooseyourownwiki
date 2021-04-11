@@ -7,17 +7,17 @@ article revisions.
 """
 from xml.etree import ElementTree as ET
 
-import wiki.plugins.whatlinkswhere.models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from wiki import models as wiki_models
 from wiki.core.markdown import article_markdown
+from wiki.plugins.linknetwork.models import InternalLink
 
 
 __all__ = ["InternalStoryLink", "store_links"]
 
 
-class InternalStoryLink(wiki.plugins.whatlinkswhere.models.InternalLink):
+class InternalStoryLink(InternalLink):
     """This model describes links between articles."""
 
     is_adventure_choice = models.BooleanField(
