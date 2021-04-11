@@ -27,8 +27,11 @@
       {% if children_slice_more %}
       <a class="dropdown-item" href="#"><em>{% trans "...and more" %}</em></a>
       {% endif %}
+
+      {% block wiki_breadcrumbs_browse %}
       <div class="dropdown-divider"></div>
       <a class="dropdown-item" href="{% url 'wiki:dir' path=urlpath.path %}">{% trans "Browse articles in this level" %} &raquo;</a>
+      {% endblock %}
     </div>
   </div>
   <div class="btn-group" style="margin-left: 10px;">

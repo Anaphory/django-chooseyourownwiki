@@ -1,7 +1,6 @@
 from urllib.parse import quote
 from urllib.parse import urljoin
 from urllib.parse import urlparse
-from xml.etree.ElementTree import dump
 from xml.etree.ElementTree import Element
 
 import wiki.models as wiki_models
@@ -29,7 +28,7 @@ class LinkTreeprocessor(Treeprocessor):
             self._my_article = self.md.article
             return self._my_article
 
-    def is_wiki_link(self, el):
+    def extract_sister_article_from_link(self, el):
         href = el.get("href")
         try:
             assert href
@@ -40,6 +39,11 @@ class LinkTreeprocessor(Treeprocessor):
             target = urljoin(
                 self.my_article.get_absolute_url(), url.path.rstrip("/") + "/"
             )
+            if (
+                not target.rsplit("/", 2)[0]
+                == self.my_article.get_absolute_url().rsplit("/", 2)[0]
+            ):
+                return None
             resolution = resolve(target)
             assert resolution.app_names == ["wiki"]
             article, destination = which_article(**resolution.kwargs)
@@ -59,10 +63,12 @@ class LinkTreeprocessor(Treeprocessor):
         return article
 
     def run(self, doc):
+        choices = []
         for ul in doc.iter():
             if ul.tag != "ul":
                 continue
             parents = {}
+            step = None
             for lc in ul.iter():
                 for child in lc:
                     parents[child] = lc
@@ -70,24 +76,22 @@ class LinkTreeprocessor(Treeprocessor):
                     continue
                 if lc.get("class") == self.new_class:
                     continue
-                if not lc.get("href").startswith("../"):
-                    continue
-                if self.is_wiki_link(lc):
-                    print(parents, lc)
+                if self.extract_sister_article_from_link(lc):
                     index = min(i for i, c in enumerate(parents[lc]) if c == lc)
                     lc.set("class", self.choice_class)
                     lc.tail = " "
-                    # find the parent again
-                    step = Element(
-                        "a",
-                        href="_plugin/insertstep/b{:}:{:}".format(
-                            lc.get("href"), quote(lc.text)
-                        ),
-                    )
-                    step.set("class", self.new_class)
-                    step.text = _("[Insert a step in between]")
-                    parents[lc].insert(index + 1, step)
-                    dump(parents[lc])
+                    choices.append((lc, index))
+        for choice, index in choices:
+            step = Element(
+                "a",
+                href="_plugin/insertstep/b{:}:{:}".format(
+                    lc.get("href"), quote(lc.text)
+                ),
+            )
+            step.set("class", self.new_class)
+            step.text = _("[Insert a step in between]")
+
+            parents[choice].insert(index, step)
 
 
 class LinkExtension(Extension):

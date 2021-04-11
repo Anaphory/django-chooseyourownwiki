@@ -149,6 +149,7 @@ STATIC_ROOT = os.path.join(PROJECT_DIR, "static")
 MEDIA_ROOT = os.path.join(PROJECT_DIR, "media")
 MEDIA_URL = "/media/"
 
+STATICFILES_DIRS = [os.path.join(PROJECT_DIR, "local_static")]
 
 WIKI_ANONYMOUS_WRITE = True
 WIKI_ANONYMOUS_CREATE = False

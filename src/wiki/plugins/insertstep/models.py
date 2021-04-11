@@ -25,15 +25,21 @@ class InternalStoryLink(InternalLink):
         verbose_name=_("is_adventure_choice"),
         help_text=_("The link is a choice in a choose-your-own-adventure page"),
     )
+    leadin = models.CharField(
+        max_length=512,
+        verbose_name=_("leadin"),
+        help_text=_("The lead-in text from the origin to the target page"),
+    )
 
     def __str__(self):
         if not self.is_adventure_choice:
-            return super().__str__(self)
-        return _("Story page {:s} can lead to {:s}").format(
+            return super().__str__()
+        return _("Story page {:s} can lead to {:s} with text {:s}").format(
             self.from_article.current_revision.title,
             self.to_article.current_revision.title
             if self.to_article
             else self.to_nonexistant_url,
+            self.leadin,
         )
 
 
@@ -66,9 +72,14 @@ def store_links(instance, *args, **kwargs):
         for lc in ul.iter():
             if lc.tag != "a":
                 continue
+            if "new" in lc.get("class", "").split():
+                continue
             store = InternalStoryLink.store_link(url, article, lc)
+            print("Story Link")
             if store:
                 store.is_adventure_choice = True
+                store.leadin = lc.text  # TODO: use flattened interior instead?
+                store.save()
 
 
 # Whenever a new revision is created, update all links in there

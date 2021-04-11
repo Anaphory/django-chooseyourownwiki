@@ -1,0 +1,18 @@
+{% extends "wiki/base.html" %}
+{% load sekizai_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block wiki_header_branding %}<a class="navbar-brand" href="/">Choose Your Own CYO Adventure</a>
+{% addtoblock "css" %} <link rel="stylesheet" type="text/css" href="{% static "cyocyo.css" %}" media="screen" /> {% endaddtoblock %}
+{% endblock %}
+
+{% block wiki_site_title %} – CYOCYO{% endblock %}
+
+{% block wiki_header_navlinks %}
+<ul class="navbar-nav mr-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="/">{% trans "Home" %}</a>
+    </li>
+</ul>
+{% endblock %}

@@ -1,0 +1,4 @@
+.wiki-article ul li a.choice {color: #044;}
+.wiki-article ul li a.new {display: inline-block;  background: url('/static/add.svg') no-repeat; color: transparent; width: 1.5em; height: 1.2em; overflow: hidden;}
+td a.new {display: inline-block;  background: url('/static/add.svg') no-repeat; color: transparent; width: 1.5em; height: 1.2em; overflow: hidden;}
+.wiki-article ul li a {color: #905;}
